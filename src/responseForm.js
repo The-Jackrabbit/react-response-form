@@ -10,11 +10,16 @@ const propTypes = {
 	onSubmit:  PropTypes.func.isRequired,
 	responseText: PropTypes.string,
 	minimumWordCount: PropTypes.number,
+	editing: PropTypes.bool,
+	submissionState: PropTypes.string,
 };
 
 const defaultProps = {
 	responseText: '',
 	minimumWordCount: 1,
+	wordCount: 0,
+	editing: true,
+	submissionState: 'todo',
 };
 
 class ResponseForm extends Component {
@@ -22,13 +27,18 @@ class ResponseForm extends Component {
 		super();
 
 		this.state = {
-			responseText: '',
-			wordCount: 0,
 			isValid: false,
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.toggleEdit = this.toggleEdit.bind(this);
+	}
+
+	componentWillMount() {
+		this.setState({
+			...this.props,
+		});
 	}
 
 	handleSubmit(event) {
@@ -43,6 +53,7 @@ class ResponseForm extends Component {
 				wordCount: this.state.wordCount,
 				submissionDate: new Date(),
 			};
+			this.toggleEdit();
 			this.props.onSubmit(responseObject);
 		}
 
@@ -66,24 +77,49 @@ class ResponseForm extends Component {
 			isValid: newWordCount >= this.props.minimumWordCount,
 		});
 	}
+	toggleEdit() {
+		this.setState({
+			editing: !this.state.editing,
+		});
+	}
 
 	render() {
 		return(
-			
-			<form onSubmit={this.handleSubmit} className="response-form">
-				<textarea 
-					className="response"
-					value={this.state.value} 
-					onChange={this.handleChange} />
-				<p className="word-count">{
-					(this.props.minimumWordCount - this.state.wordCount) > 0 
-						? this.props.minimumWordCount - this.state.wordCount 
-						: 0
-				} words left</p>
-				<div className="submit">
-					<button type="submit" className={this.state.isValid ? 'valid' : 'invalid'}>Submit</button>
+			<div>
+				{(!this.state.editing || this.props.submissionState === 'graded') && 
+				<div className="response-form">
+					<p>{this.state.responseText}</p>
+					<p className="word-count">{this.state.wordCount} words</p>
+					<div className="submit">
+						{
+							this.props.submissionState !== 'graded' && 
+							<button type="submit" 
+								className={this.state.isValid ? 'valid' : 'invalid'} 
+								onClick={this.toggleEdit}>
+								Edit Response
+							</button>
+						}
+					</div>
 				</div>
-			</form>
+				}
+				{this.state.editing && 
+				<form onSubmit={this.handleSubmit} className="response-form">
+					<textarea 
+						className="response"
+						value={this.state.responseText} 
+						onChange={this.handleChange} />
+					<p className="word-count">{
+						(this.props.minimumWordCount - this.state.wordCount) > 0 
+							? this.props.minimumWordCount - this.state.wordCount 
+							: 0
+					} words left</p>
+					<div className="submit">
+						<button type="submit" className={this.state.isValid ? 'valid' : 'invalid'}>Submit</button>
+					</div>
+				</form>
+				}
+			</div>
+			
 		);
 	}
 }
