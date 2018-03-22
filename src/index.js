@@ -8,11 +8,16 @@ let handleSubmit = (pkg) => {
 	console.log(pkg);
 };
 ReactDOM.render(
-	<ResponseForm 
-		studentId='lsm5fm' 
-		studentEmail='lsm5fm@virginia.edu' 
-		readingId={1}
-		onSubmit={handleSubmit}/>,
+	<div
+		style={{
+			width: '300pt',
+		}}>
+		<ResponseForm 
+			studentId='lsm5fm' 
+			studentEmail='lsm5fm@virginia.edu' 
+			readingId={1}
+			onSubmit={handleSubmit}/>
+	</div>,
 	document.getElementById('root')
 );
 registerServiceWorker();

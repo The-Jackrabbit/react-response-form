@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import './responseForm.css';
+
 const propTypes = {
 	studentId: PropTypes.string.isRequired,
 	studentEmail: PropTypes.string.isRequired,
@@ -12,7 +14,7 @@ const propTypes = {
 
 const defaultProps = {
 	responseText: '',
-	minimumWordCount: 0,
+	minimumWordCount: 1,
 };
 
 class ResponseForm extends Component {
@@ -22,16 +24,16 @@ class ResponseForm extends Component {
 		this.state = {
 			responseText: '',
 			wordCount: 0,
+			isValid: false,
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
-		this.handleBlur = this.handleBlur.bind(this);
 	}
 
 	handleSubmit(event) {
 		event.preventDefault();
-		
+
 		if (this.state.wordCount >= this.props.minimumWordCount) {
 			const responseObject = {
 				studentId: this.props.studentId,
@@ -48,12 +50,7 @@ class ResponseForm extends Component {
 	}
 
 	countWords(str) {
-		console.log(str[str.length - 1]);
 		let words = str.split(' ');
-		console.log({
-			'words': words,
-			'words.length - 1*(str[str.length - 1] === " ")': words.length - 1*(str[str.length - 1] === ' '),
-		});
 		return words.length - 1*(str[str.length - 1] === ' ');
 	}
 
@@ -61,32 +58,31 @@ class ResponseForm extends Component {
 		let text = event.target.value;
 		let newWordCount = this.state.wordCount;
 
-		if (text[text.length - 1] === ' ') {
-			newWordCount = this.countWords(text);
-		}
+		newWordCount = this.countWords(text);
 
 		this.setState({
 			responseText: text,
 			wordCount: newWordCount,
-		});
-	}
-
-	handleBlur(event) {
-		let text = event.target.value;
-		let newWordCount = this.countWords(text);
-
-		this.setState({
-			responseText: text,
-			wordCount: newWordCount,
+			isValid: newWordCount >= this.props.minimumWordCount,
 		});
 	}
 
 	render() {
 		return(
-			<form onSubmit={this.handleSubmit}>
-				<textarea value={this.state.value} onChange={this.handleChange} onBlur={this.handleBlur} />
-				<span>{(this.props.minimumWordCount - this.state.wordCount) > 0 ? this.props.minimumWordCount - this.state.wordCount : 0}words left</span>
-				<input type="submit" value="Submit"/>
+			
+			<form onSubmit={this.handleSubmit} className="response-form">
+				<textarea 
+					className="response"
+					value={this.state.value} 
+					onChange={this.handleChange} />
+				<p className="word-count">{
+					(this.props.minimumWordCount - this.state.wordCount) > 0 
+						? this.props.minimumWordCount - this.state.wordCount 
+						: 0
+				} words left</p>
+				<div className="submit">
+					<button type="submit" className={this.state.isValid ? 'valid' : 'invalid'}>Submit</button>
+				</div>
 			</form>
 		);
 	}
