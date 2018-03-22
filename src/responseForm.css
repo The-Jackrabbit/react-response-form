@@ -7,7 +7,16 @@
 }
 .response {
 	grid-area: response;
-	min-height: 200pt;
+	
+}
+.response p.title {
+	margin: 6pt 0pt;
+	font-size: 24pt;
+	font-weight: lighter;
+}
+.response .response-text, .response textarea  {
+	height: 300pt;
+	width: 300pt;
 }
 .word-count {
 	grid-area: wordCount;

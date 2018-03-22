@@ -88,7 +88,11 @@ class ResponseForm extends Component {
 			<div>
 				{(!this.state.editing || this.props.submissionState === 'graded') && 
 				<div className="response-form">
-					<p>{this.state.responseText}</p>
+					<div className="response">
+						<p className="title">response</p>
+						<p className="response-text">{this.state.responseText}</p>
+					</div>
+					
 					<p className="word-count">{this.state.wordCount} words</p>
 					<div className="submit">
 						{
@@ -104,10 +108,15 @@ class ResponseForm extends Component {
 				}
 				{this.state.editing && 
 				<form onSubmit={this.handleSubmit} className="response-form">
-					<textarea 
-						className="response"
-						value={this.state.responseText} 
-						onChange={this.handleChange} />
+					<div className="response">
+						<p className="title">response</p>
+						<textarea 
+							className="response-text"
+						
+							value={this.state.responseText} 
+							onChange={this.handleChange} />
+					</div>
+					
 					<p className="word-count">{
 						(this.props.minimumWordCount - this.state.wordCount) > 0 
 							? this.props.minimumWordCount - this.state.wordCount 
